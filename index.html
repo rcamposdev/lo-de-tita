@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Lo de Tita | Landing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <style>
+        :root {
+            --bg: #f8f4ed;
+            --bg-soft: #fff8ef;
+            --paper: #fffdf9;
+            --ink: #211712;
+            --muted: #76675f;
+            --line: rgba(77, 50, 34, 0.12);
+            --accent: #cf4f2d;
+            --accent-2: #0d8a74;
+            --accent-3: #f1c76a;
+            --shadow-soft: 0 10px 30px rgba(35, 22, 14, 0.08);
+            --shadow-deep: 0 24px 48px rgba(35, 22, 14, 0.12);
+            --radius-sm: 12px;
+            --radius: 20px;
+            --radius-lg: 28px;
+            --radius-pill: 999px;
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --font-hand: 'Caveat', cursive;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100dvh;
+            color: var(--ink);
+            font-family: var(--font-body);
+            background:
+                radial-gradient(circle at top left, rgba(241, 199, 106, 0.45), transparent 28%),
+                radial-gradient(circle at 100% 20%, rgba(13, 138, 116, 0.12), transparent 24%),
+                linear-gradient(180deg, #f6efe4 0%, #fbf8f2 38%, #f6efe5 100%);
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        [x-cloak] { display: none !important; }
+
+        .site-shell {
+            width: min(1200px, calc(100% - 28px));
+            margin: 0 auto;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+            background: rgba(248, 244, 237, 0.72);
+            border-bottom: 1px solid rgba(77, 50, 34, 0.08);
+        }
+
+        .topbar-inner {
+            width: min(1200px, calc(100% - 28px));
+            margin: 0 auto;
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            line-height: 0.92;
+        }
+
+        .brand-main {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            letter-spacing: 0.03em;
+        }
+
+        .brand-main span {
+            color: var(--accent);
+        }
+
+        .brand-sub {
+            font-family: var(--font-hand);
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link,
+        .cart-button,
+        .hero-button,
+        .preset-action,
+        .builder-submit,
+        .contact-button {
+            border: none;
+            cursor: pointer;
+            transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+        }
+
+        .nav-link {
+            display: none;
+            color: var(--muted);
+            font-weight: 700;
+            background: transparent;
+            padding: 10px 12px;
+            border-radius: 999px;
+        }
+
+        .cart-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: #201712;
+            color: #fff;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .cart-badge {
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-3);
+            color: var(--ink);
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .cart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(18, 13, 10, 0.42);
+            backdrop-filter: blur(6px);
+            z-index: 120;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            left: 50%;
+            bottom: 10px;
+            transform: translateX(-50%);
+            z-index: 121;
+            width: min(680px, calc(100% - 20px));
+            max-height: min(78dvh, 760px);
+            border-radius: 24px;
+            padding: 18px;
+            display: grid;
+            grid-template-rows: auto 1fr auto auto;
+            gap: 12px;
+        }
+
+        .cart-list {
+            overflow: auto;
+            display: grid;
+            gap: 8px;
+            padding-right: 4px;
+        }
+
+        .cart-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .cart-empty {
+            border: 1px dashed var(--line);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid var(--line);
+            padding-top: 12px;
+        }
+
+        .cart-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .cart-action-secondary {
+            width: 100%;
+            min-height: 50px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .cart-action-secondary:active {
+            transform: scale(0.98);
+        }
+
+        .cart-action-primary {
+            width: 100%;
+            margin-top: 0;
+            min-height: 50px;
+            border: none;
+            border-radius: 18px;
+            background: var(--accent);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            letter-spacing: 0;
+            font-weight: 800;
+            box-shadow: 0 14px 28px rgba(207, 79, 45, 0.24);
+            cursor: pointer;
+        }
+
+        .cart-action-primary:disabled {
+            background: #c6beb6;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .cart-action-primary:active {
+            transform: scale(0.98);
+        }
+
+        .upsell-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(18, 13, 10, 0.42);
+            backdrop-filter: blur(6px);
+            z-index: 130;
+        }
+
+        .upsell-modal {
+            position: fixed;
+            inset: auto 50% 18px auto;
+            transform: translateX(50%);
+            z-index: 131;
+            width: min(560px, calc(100% - 20px));
+            border-radius: 24px;
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+            background: rgba(255, 253, 249, 0.96);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-deep);
+        }
+
+        .upsell-copy {
+            display: grid;
+            gap: 6px;
+        }
+
+        .upsell-copy p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.45;
+        }
+
+        .upsell-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .upsell-item {
+            min-height: 84px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: #fff;
+            padding: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
+        }
+
+        .upsell-item.selected {
+            background: rgba(207, 79, 45, 0.08);
+            border-color: rgba(207, 79, 45, 0.28);
+        }
+
+        .upsell-item-copy {
+            min-width: 0;
+            flex: 1;
+            display: grid;
+            gap: 2px;
+        }
+
+        .upsell-item-name {
+            font-size: 0.84rem;
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .upsell-item-meta {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .upsell-qty {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 24px;
+            padding: 0 7px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            align-self: center;
+        }
+
+        .upsell-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .hero {
+            padding: 30px 0 14px;
+        }
+
+        .hero-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .hero-copy,
+        .hero-card,
+        .preset-card,
+        .builder-shell,
+        .contact-card,
+        .footer-card,
+        .cart-drawer {
+            background: rgba(255, 253, 249, 0.84);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .hero-copy {
+            border-radius: 28px;
+            padding: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--muted);
+            font-size: 0.78rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .hero-title {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 15vw, 5.6rem);
+            line-height: 0.9;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-title span {
+            color: var(--accent);
+        }
+
+        .hero-text {
+            margin: 14px 0 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--muted);
+            max-width: 42ch;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .hero-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 52px;
+            padding: 0 18px;
+            border-radius: 999px;
+            font-weight: 800;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .hero-button.primary,
+        .builder-submit,
+        .preset-action.primary,
+        .contact-button {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 14px 28px rgba(207, 79, 45, 0.24);
+        }
+
+        .hero-button.secondary,
+        .preset-action.secondary {
+            background: var(--paper);
+            color: var(--ink);
+            border: 1px solid var(--line);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65);
+        }
+
+        .hero-card {
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+            min-height: 360px;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            min-height: 360px;
+        }
+
+        .hero-tag {
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            max-width: 220px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(33, 23, 18, 0.72);
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-tag strong {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .hero-tag span {
+            font-size: 0.82rem;
+            line-height: 1.3;
+            color: rgba(255, 255, 255, 0.82);
+        }
+
+        .section {
+            padding: 14px 0 18px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .section-kicker {
+            font-family: var(--font-hand);
+            font-size: 1rem;
+            color: var(--muted);
+        }
+
+        .section-title {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 8vw, 3rem);
+            line-height: 0.95;
+        }
+
+        .section-text {
+            margin: 8px 0 0;
+            color: var(--muted);
+            max-width: 45ch;
+            line-height: 1.5;
+        }
+
+        .preset-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .preset-card {
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .preset-media {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            background: var(--surface2);
+        }
+
+        .preset-body {
+            padding: 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .preset-name {
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .preset-description {
+            color: var(--muted);
+            line-height: 1.45;
+            min-height: 66px;
+            font-size: 0.9rem;
+        }
+
+        .preset-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .preset-price {
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .preset-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .preset-action {
+            min-height: 44px;
+            padding: 0 14px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .builder-shell {
+            border-radius: 28px;
+            padding: 18px;
+        }
+
+        .builder-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .builder-stage {
+            background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(246,236,225,0.74));
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 18px;
+            min-height: 360px;
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+        }
+
+        .stage-label {
+            font-family: var(--font-hand);
+            font-size: 0.96rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .price-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .price-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+        }
+
+        .price-amount {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .sandwich-visual {
+            position: relative;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            min-height: 220px;
+        }
+
+        .plate {
+            position: absolute;
+            bottom: 0;
+            width: min(88%, 320px);
+            height: 22px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.12) 0%, transparent 72%);
+        }
+
+        .sandwich-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+            color: var(--muted);
+            padding-bottom: 20px;
+        }
+
+        .sandwich-empty-text {
+            font-size: 0.94rem;
+        }
+
+        .layers-stack {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            width: min(100%, 340px);
+        }
+
+        .layer {
+            width: 88%;
+            text-align: center;
+            animation: layer-fall 0.5s var(--spring) both;
+        }
+
+        .layer-inner {
+            padding: 8px 16px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.14);
+        }
+
+        .layer-pan-top .layer-inner,
+        .layer-pan-bottom .layer-inner {
+            background: linear-gradient(180deg, #e6ba7b 0%, #cf9650 100%);
+            color: #624531;
+            text-shadow: none;
+        }
+
+        .layer-pan-top .layer-inner {
+            border-radius: 28px 28px 12px 12px;
+        }
+
+        .layer-pan-bottom .layer-inner {
+            border-radius: 12px 12px 22px 22px;
+        }
+
+        .layer-fiambrescat .layer-inner { background: linear-gradient(135deg, #ffb6c7, #ff7f95); }
+        .layer-proteinacat .layer-inner { background: linear-gradient(135deg, #f7a96b, #e07a2f); }
+        .layer-vegetalcat .layer-inner { background: linear-gradient(135deg, #8be2d1, #3fc1aa); }
+        .layer-aderezoscat .layer-inner { background: linear-gradient(135deg, #fde68a, #f59e0b); }
+
+        .builder-options {
+            display: grid;
+            gap: 16px;
+        }
+
+        .builder-category {
+            display: grid;
+            gap: 10px;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-title {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            line-height: 1;
+        }
+
+        .pills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .pill {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 12px;
+            min-height: 76px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
+        }
+
+        .pill.selected {
+            background: rgba(207, 79, 45, 0.08);
+            border-color: rgba(207, 79, 45, 0.28);
+        }
+
+        .pill:disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .pill-copy {
+            min-width: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .pill-name {
+            font-size: 0.82rem;
+            font-weight: 800;
+            line-height: 1.15;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .pill-price {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .pill-qty {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 7px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .icon-chip {
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ingredient-emoji {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .ui-icon {
+            width: 16px;
+            height: 16px;
+            stroke-width: 2;
+        }
+
+        .builder-submit {
+            width: 100%;
+            min-height: 56px;
+            border-radius: 18px;
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+        }
+
+        .builder-submit:disabled {
+            background: #c6beb6;
+            box-shadow: none;
+        }
+
+        .contact-grid,
+        .footer-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .contact-card,
+        .footer-card {
+            border-radius: 24px;
+            padding: 20px;
+        }
+
+        .contact-list {
+            display: grid;
+            gap: 12px;
+            margin: 16px 0 0;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            color: var(--muted);
+        }
+
+        .contact-item strong {
+            color: var(--ink);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .contact-button {
+            min-height: 48px;
+            border-radius: 999px;
+            padding: 0 16px;
+            margin-top: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-note {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(13, 138, 116, 0.08);
+            color: var(--ink);
+            line-height: 1.45;
+        }
+
+        .news-list {
+            margin-top: 12px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .news-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px dashed var(--line);
+        }
+
+        .news-day {
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            min-width: 64px;
+        }
+
+        .news-name {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .news-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--accent-2);
+        }
+
+        .footer-card {
+            margin-bottom: 24px;
+            border-radius: 24px;
+            padding: 22px 20px;
+            text-align: center;
+            display: grid;
+            gap: 12px;
+            background: rgba(255, 253, 249, 0.84);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .footer-brand {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            letter-spacing: 0.02em;
+            line-height: 0.9;
+        }
+
+        .footer-line {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.45;
+            max-width: 46ch;
+            margin: 0 auto;
+        }
+
+        .footer-socials {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .footer-social-link {
+            width: 46px;
+            height: 46px;
+            border-radius: 999px;
+            border: 1px solid rgba(77, 50, 34, 0.2);
+            background: rgba(241, 199, 106, 0.22);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink);
+            box-shadow: 0 6px 14px rgba(35, 22, 14, 0.08);
+            transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+        }
+
+        .footer-social-link:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(77, 50, 34, 0.32);
+        }
+
+        .footer-social-link .ui-icon {
+            width: 21px;
+            height: 21px;
+        }
+
+        .button-press:active,
+        .hero-button:active,
+        .preset-action:active,
+        .builder-submit:active,
+        .contact-button:active,
+        .cart-button:active,
+        .pill:active {
+            transform: scale(0.97);
+        }
+
+        @media (min-width: 760px) {
+            .nav-link {
+                display: inline-flex;
+            }
+
+            #destacados .section-text,
+            #builder .section-text {
+                white-space: nowrap;
+                max-width: none;
+                font-size: 0.95rem;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1.05fr 0.95fr;
+                align-items: stretch;
+            }
+
+            .preset-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .builder-grid {
+                grid-template-columns: 0.94fr 1.06fr;
+                align-items: start;
+            }
+
+            .builder-stage {
+                position: sticky;
+                top: 92px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1.1fr 0.9fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cart-drawer {
+                bottom: 20px;
+                padding: 22px;
+            }
+
+            .cart-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .upsell-modal {
+                bottom: 20px;
+                padding: 22px;
+            }
+
+            .footer-line {
+                white-space: nowrap;
+                max-width: none;
+                font-size: 0.86rem;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .upsell-grid,
+            .upsell-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div x-data="landingApp()" x-init="init()" x-cloak>
+        <header class="topbar">
+            <div class="topbar-inner">
+                <a href="#hero" class="brand">
+                    <span class="brand-main">Lo de <span>Tita</span></span>
+                    <span class="brand-sub">sanguches familiares hechos con amor</span>
+                </a>
+                <div class="nav-actions">
+                    <a class="nav-link" href="#destacados">Destacados</a>
+                    <a class="nav-link" href="#builder">Arma el tuyo</a>
+                    <a class="nav-link" href="#contacto">Contacto</a>
+                    <button class="cart-button button-press" @click="cartOpen = true; refreshIcons()">
+                        <i data-lucide="shopping-bag" class="ui-icon"></i>
+                        <span>Pedido</span>
+                        <span class="cart-badge" x-show="cart.length > 0" x-text="cart.length" x-cloak></span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero" id="hero">
+                <div class="site-shell hero-grid">
+                    <div class="hero-copy">
+                        <p class="eyebrow">Sandwicheria visual</p>
+                        <h1 class="hero-title">Mordé <span>algo</span> serio.</h1>
+                        <p class="hero-text">
+                            Favoritos listos para salir o un constructor para armar el sánguche a tu ritmo.
+                            Rápido, táctil y pensado para mobile de verdad.
+                        </p>
+                        <div class="hero-actions">
+                            <a href="#destacados" class="hero-button primary">
+                                <i data-lucide="star" class="ui-icon"></i>
+                                <span>Ver destacados</span>
+                            </a>
+                            <a href="#builder" class="hero-button secondary">
+                                <i data-lucide="sandwich" class="ui-icon"></i>
+                                <span>Armar el mío</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="hero-card">
+                        <img
+                            class="hero-image"
+                            src="https://images.unsplash.com/photo-1528736235302-52922df5c122?auto=format&fit=crop&w=1200&q=80"
+                            alt="Sanguche destacado"
+                        >
+                        <div class="hero-tag">
+                            <strong>Favoritos de la casa</strong>
+                            <span>Sánguches contundentes, fotos fuertes y una experiencia de pedido simple.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="destacados">
+                <div class="site-shell">
+                    <div class="section-head">
+                        <div>
+                            <div class="section-kicker">Pedido rapido</div>
+                            <h2 class="section-title">Sanguches ya armados</h2>
+                            <p class="section-text">Elegí una opción cerrada con foto, descripción y precio, o usala como punto de partida para personalizar.</p>
+                        </div>
+                    </div>
+                    <div class="preset-grid">
+                        <template x-for="preset in presets" :key="preset.id">
+                            <article class="preset-card">
+                                <img class="preset-media" :src="preset.image" :alt="preset.name">
+                                <div class="preset-body">
+                                    <div class="preset-name" x-text="preset.name"></div>
+                                    <div class="preset-description" x-text="preset.description"></div>
+                                    <div class="preset-footer">
+                                        <div class="preset-price" x-text="`$${preset.price}`"></div>
+                                        <div class="preset-actions">
+                                            <button class="preset-action secondary" @click="applyPreset(preset)">Personalizar</button>
+                                            <button class="preset-action primary" @click="beginPresetOrder(preset)">Agregar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="builder">
+                <div class="site-shell">
+                    <div class="section-head">
+                        <div>
+                            <div class="section-kicker">Custom builder</div>
+                            <h2 class="section-title">Arma tu sanguche</h2>
+                            <p class="section-text">Elegí pan, sumá fiambres o proteínas, duplicá porciones y mirá cómo sube el stack en tiempo real.</p>
+                        </div>
+                    </div>
+
+                    <div class="builder-shell">
+                        <div class="builder-grid">
+                            <div class="builder-stage">
+                                <div class="stage-label">
+                                    <i data-lucide="sparkles" class="ui-icon"></i>
+                                    Tu creacion
+                                </div>
+                                <div class="price-card">
+                                    <div>
+                                        <div class="price-label">Subtotal</div>
+                                    </div>
+                                    <div class="price-amount" x-text="`$${currentPrice().toLocaleString('es-AR')}`"></div>
+                                </div>
+                                <div class="sandwich-visual">
+                                    <div class="plate"></div>
+
+                                    <div class="sandwich-empty" x-show="getLayers().length === 0">
+                                        <div class="sandwich-empty-icon">
+                                            <i data-lucide="sandwich" class="ui-icon"></i>
+                                        </div>
+                                        <div class="sandwich-empty-text">Empeza eligiendo un pan</div>
+                                    </div>
+
+                                    <div class="layers-stack" x-show="getLayers().length > 0">
+                                        <div class="layer layer-pan-bottom" x-show="current.pan">
+                                            <div class="layer-inner">
+                                                <span class="icon-chip"><span class="ingredient-emoji" x-text="itemIcon(current.pan, 'pan')"></span></span>
+                                                <span x-text="current.pan?.name || ''"></span>
+                                            </div>
+                                        </div>
+
+                                        <template x-for="f in current.fiambres" :key="`f-${f.id}`">
+                                            <div class="layer layer-fiambrescat">
+                                                <div class="layer-inner">
+                                                    <span class="icon-chip"><span class="ingredient-emoji" x-text="itemIcon(f, 'fiambres')"></span></span>
+                                                    <span x-text="formatLayerName(f)"></span>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <template x-for="p in current.proteinas" :key="`p-${p.id}`">
+                                            <div class="layer layer-proteinacat">
+                                                <div class="layer-inner">
+                                                    <span class="icon-chip"><span class="ingredient-emoji" x-text="itemIcon(p, 'proteinas')"></span></span>
+                                                    <span x-text="formatLayerName(p)"></span>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <template x-for="v in current.vegetales" :key="`v-${v.id}`">
+                                            <div class="layer layer-vegetalcat">
+                                                <div class="layer-inner">
+                                                    <span class="icon-chip"><span class="ingredient-emoji" x-text="itemIcon(v, 'vegetales')"></span></span>
+                                                    <span x-text="formatLayerName(v)"></span>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <template x-for="a in current.aderezos" :key="`a-${a.id}`">
+                                            <div class="layer layer-aderezoscat">
+                                                <div class="layer-inner">
+                                                    <span class="icon-chip"><span class="ingredient-emoji" x-text="itemIcon(a, 'aderezos')"></span></span>
+                                                    <span x-text="formatLayerName(a)"></span>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <div class="layer layer-pan-top" x-show="current.pan">
+                                            <div class="layer-inner">
+                                                <span class="icon-chip"><span class="ingredient-emoji" x-text="itemIcon(current.pan, 'pan')"></span></span>
+                                                <span x-text="current.pan?.name || ''"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="builder-options">
+                                <template x-for="cat in menu" :key="cat.id">
+                                    <section class="builder-category">
+                                        <div class="category-header">
+                                            <span class="icon-chip"><i :data-lucide="iconForCategory(cat.id)" class="ui-icon"></i></span>
+                                            <div class="category-title" x-text="cat.label"></div>
+                                        </div>
+                                        <div class="pills-grid">
+                                            <template x-for="item in cat.items" :key="item.id">
+                                                <button
+                                                    class="pill"
+                                                    :class="{ selected: isSelected(cat.id, item.id) }"
+                                                    :disabled="requiresPan(cat.id) && !current.pan"
+                                                    :title="requiresPan(cat.id) && !current.pan ? 'Primero elegi el pan' : ''"
+                                                    @click="toggleItem(cat, item)"
+                                                >
+                                                    <span class="icon-chip">
+                                                        <span class="ingredient-emoji" x-text="itemIcon(item, cat.id)"></span>
+                                                    </span>
+                                                    <div class="pill-copy">
+                                                        <span class="pill-name" x-text="item.name"></span>
+                                                        <span class="pill-price" x-text="itemMeta(item, cat.id)"></span>
+                                                        <span class="pill-qty" x-show="getItemQty(cat.id, item.id) > 1" x-text="`x${getItemQty(cat.id, item.id)}`"></span>
+                                                    </div>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </section>
+                                </template>
+
+                                <button class="builder-submit" :disabled="!canAddToCart()" @click="beginBuilderOrder()">Agregar al pedido</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="contacto">
+                <div class="site-shell contact-grid">
+                    <div class="contact-card">
+                        <div class="section-kicker">Contacto</div>
+                        <h2 class="section-title">Pasá, llamá o escribinos</h2>
+                        <p class="section-text">Dejé una sección lista para completar con tus datos reales del local sin tocar la estructura de la landing.</p>
+                        <div class="contact-list">
+                            <div class="contact-item">
+                                <i data-lucide="map-pinned" class="ui-icon"></i>
+                                <div>
+                                    <strong>Direccion</strong>
+                                    <span>Agregar direccion del local</span>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i data-lucide="phone-call" class="ui-icon"></i>
+                                <div>
+                                    <strong>Telefono</strong>
+                                    <span>Agregar telefono o WhatsApp</span>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i data-lucide="clock-3" class="ui-icon"></i>
+                                <div>
+                                    <strong>Horarios</strong>
+                                    <span>Agregar dias y horarios de atencion</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="contact-button">
+                            <i data-lucide="message-circle-more" class="ui-icon"></i>
+                            Contactar
+                        </button>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="section-kicker">Novedades</div>
+                        <h2 class="section-title">Calendario de sánguches</h2>
+                        <p class="section-text">Especiales de la semana. Rotan según stock y temporada.</p>
+                        <div class="news-list">
+                            <div class="news-item">
+                                <span class="news-day">Lunes</span>
+                                <span class="news-name">Mila Full + limonada</span>
+                                <span class="news-badge">Promo</span>
+                            </div>
+                            <div class="news-item">
+                                <span class="news-day">Miércoles</span>
+                                <span class="news-name">Crudo Bravo</span>
+                                <span class="news-badge">Nuevo</span>
+                            </div>
+                            <div class="news-item">
+                                <span class="news-day">Viernes</span>
+                                <span class="news-name">Doble Queso</span>
+                                <span class="news-badge">Top</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="section">
+            <div class="site-shell">
+                <div class="footer-card">
+                    <div class="footer-brand">LO DE TITA</div>
+                    <div class="footer-line">Sanguches familiares hechos con amor, listos para compartir.</div>
+                    <div class="footer-socials" aria-label="Redes sociales">
+                        <a class="footer-social-link" href="#" aria-label="Instagram">
+                            <i data-lucide="instagram" class="ui-icon"></i>
+                        </a>
+                        <a class="footer-social-link" href="#" aria-label="Facebook">
+                            <i data-lucide="facebook" class="ui-icon"></i>
+                        </a>
+                        <a class="footer-social-link" href="#" aria-label="TikTok">
+                            <i data-lucide="music-2" class="ui-icon"></i>
+                        </a>
+                        <a class="footer-social-link" href="#" aria-label="WhatsApp">
+                            <i data-lucide="message-circle-more" class="ui-icon"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <template x-if="upsellOpen">
+            <div>
+                <div class="upsell-overlay" @click="skipUpsell()"></div>
+                <div class="upsell-modal">
+                    <div class="upsell-copy">
+                        <div class="section-kicker">Ultimo paso</div>
+                        <h2 class="section-title" style="font-size:2rem;">Queres sumar algo mas?</h2>
+                        <p>Podés agregar bebidas o extras antes de mandarlo al pedido.</p>
+                    </div>
+                    <div class="upsell-grid">
+                        <template x-for="item in upsellCatalog()" :key="item.id">
+                            <button class="upsell-item" :class="{ selected: getUpsellQty(item.id) > 0 }" @click="toggleUpsell(item)">
+                                <span class="icon-chip">
+                                    <span class="ingredient-emoji" x-text="item.emoji"></span>
+                                </span>
+                                <span class="upsell-item-copy">
+                                    <span class="upsell-item-name" x-text="item.name"></span>
+                                    <span class="upsell-item-meta" x-text="`+$${item.price}${item.portion ? ` · ${item.portion}` : ''}`"></span>
+                                </span>
+                                <span class="upsell-qty" x-show="getUpsellQty(item.id) > 0" x-text="`x${getUpsellQty(item.id)}`"></span>
+                            </button>
+                        </template>
+                    </div>
+                    <div class="upsell-actions">
+                        <button class="cart-action-secondary" @click="skipUpsell()">Seguir sin extras</button>
+                        <button class="cart-action-primary" @click="confirmUpsell()">Agregar al pedido</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="cartOpen">
+            <div>
+                <div class="cart-overlay" @click="cartOpen = false"></div>
+                <div class="cart-drawer">
+                    <h2 class="section-title" style="font-size:2rem; margin: 0;">Tu pedido</h2>
+                    <div class="cart-list" x-show="cart.length > 0">
+                        <template x-for="(item, idx) in cart" :key="`${item.title}-${idx}`">
+                            <div class="cart-row">
+                                <div>
+                                    <div class="pill-name" x-text="item.title"></div>
+                                    <div class="pill-price" x-text="item.description"></div>
+                                </div>
+                                <div class="pill-name" x-text="`$${item.price}`"></div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="cart-empty" x-show="cart.length === 0">Tu pedido está vacío. Agregá un sánguche para verlo acá.</div>
+                    <div class="cart-total" x-show="cart.length > 0">
+                        <span class="footer-brand">TOTAL</span>
+                        <span class="footer-brand" style="color:var(--accent);" x-text="`$${cartTotal()}`"></span>
+                    </div>
+                    <div class="cart-actions">
+                        <button class="cart-action-secondary" @click="cartOpen = false">Continuar comprando</button>
+                        <button class="cart-action-primary" :disabled="cart.length === 0" @click="finalizePurchase()">Finalizar compra</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <script>
+        const DATA_SOURCE = './data/categories.json';
+        const PRESETS_SOURCE = './data/presets.json';
+
+        function landingApp() {
+            return {
+                menu: [],
+                presets: [],
+                current: { pan: null },
+                activePreset: null,
+                pendingOrder: null,
+                upsellOpen: false,
+                upsellSelection: {},
+                cart: [],
+                cartOpen: false,
+                priceBump: false,
+
+                async init() {
+                    const [menu, presets] = await Promise.all([
+                        this.loadMenu(),
+                        this.loadPresets()
+                    ]);
+                    this.menu = menu;
+                    this.presets = presets;
+                    this.current = this.createCurrentState(this.menu);
+                    this.refreshIcons();
+                    this.$watch('cartOpen', () => this.refreshIcons());
+                },
+
+                async loadMenu() {
+                    const response = await fetch(DATA_SOURCE);
+                    if (!response.ok) {
+                        throw new Error('No se encontro ./data/categories.json');
+                    }
+                    const payload = await response.json();
+                    return payload.categories || [];
+                },
+
+                async loadPresets() {
+                    try {
+                        const response = await fetch(PRESETS_SOURCE);
+                        if (!response.ok) return [];
+                        const payload = await response.json();
+                        return payload.sandwiches || [];
+                    } catch (error) {
+                        console.error('No se pudo cargar ./data/presets.json');
+                        return [];
+                    }
+                },
+
+                createCurrentState(menu) {
+                    const state = {};
+                    menu.forEach((cat) => {
+                        state[cat.id] = cat.rule === 'single' ? null : [];
+                    });
+                    if (!Object.prototype.hasOwnProperty.call(state, 'pan')) {
+                        state.pan = null;
+                    }
+                    return state;
+                },
+
+                refreshIcons() {
+                    this.$nextTick(() => window.lucide?.createIcons());
+                },
+
+                iconForCategory(catId) {
+                    return {
+                        pan: 'wheat',
+                        fiambres: 'beef',
+                        proteinas: 'drumstick',
+                        vegetales: 'leaf',
+                        aderezos: 'droplets',
+                        bebidas: 'cup-soda',
+                        acompanamientos: 'package-open'
+                    }[catId] || 'circle';
+                },
+
+                requiresPan(catId) {
+                    return !['pan', 'bebidas', 'acompanamientos'].includes(catId);
+                },
+
+                selectedItems() {
+                    return this.menu.flatMap((cat) => {
+                        if (cat.id === 'pan') return [];
+                        return Array.isArray(this.current[cat.id]) ? this.current[cat.id] : [];
+                    });
+                },
+
+                maxQtyForCategory(catId) {
+                    if (catId === 'bebidas') return 6;
+                    if (catId === 'acompanamientos') return 4;
+                    return 2;
+                },
+
+                upsellCatalog() {
+                    return this.menu
+                        .filter((cat) => ['bebidas', 'acompanamientos'].includes(cat.id))
+                        .flatMap((cat) => cat.items.map((item) => ({ ...item, categoryId: cat.id })));
+                },
+
+                getUpsellQty(itemId) {
+                    return this.upsellSelection[itemId]?.qty || 0;
+                },
+
+                toggleUpsell(item) {
+                    const currentQty = this.getUpsellQty(item.id);
+                    const maxQty = this.maxQtyForCategory(item.categoryId);
+                    if (currentQty === 0) {
+                        this.upsellSelection[item.id] = { ...item, qty: 1 };
+                    } else if (currentQty < maxQty) {
+                        this.upsellSelection[item.id].qty += 1;
+                    } else {
+                        delete this.upsellSelection[item.id];
+                    }
+                },
+
+                upsellItems() {
+                    return Object.values(this.upsellSelection);
+                },
+
+                upsellTotal() {
+                    return this.upsellItems().reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+                },
+
+                composeOrderFromState() {
+                    if (!this.canAddToCart()) {
+                        return null;
+                    }
+
+                    const isDrinkOnly = !this.activePreset && !this.current.pan && (this.current.bebidas?.length || 0) > 0 && (this.current.acompanamientos?.length || 0) === 0;
+                    const isSideOnly = !this.activePreset && !this.current.pan && (this.current.acompanamientos?.length || 0) > 0 && (this.current.bebidas?.length || 0) === 0;
+                    const isExtrasOnly = !this.activePreset && !this.current.pan;
+
+                    return {
+                        title: isDrinkOnly ? 'Bebidas' : (isSideOnly ? 'Extras' : (isExtrasOnly ? 'Extras' : (this.activePreset?.name || `Sanguche ${this.current.pan?.name || 'Personalizado'}`))),
+                        description: this.selectedDetails(),
+                        price: this.currentPrice()
+                    };
+                },
+
+                resetUpsell() {
+                    this.pendingOrder = null;
+                    this.upsellSelection = {};
+                    this.upsellOpen = false;
+                },
+
+                resetCurrentOrder() {
+                    this.current = this.createCurrentState(this.menu);
+                    this.activePreset = null;
+                },
+
+                openUpsell(order) {
+                    this.pendingOrder = order;
+                    this.upsellSelection = {};
+                    this.upsellOpen = true;
+                    this.refreshIcons();
+                },
+
+                finalizeOrder(order) {
+                    this.cart.push(order);
+                    this.cartOpen = true;
+                    this.refreshIcons();
+                },
+
+                beginPresetOrder(preset) {
+                    this.activePreset = null;
+                    this.openUpsell({
+                        title: preset.name,
+                        description: preset.description,
+                        price: preset.price
+                    });
+                },
+
+                beginBuilderOrder() {
+                    const order = this.composeOrderFromState();
+                    if (!order) {
+                        return;
+                    }
+
+                    const hasSandwichBase = !!this.activePreset || (!!this.current.pan && ((this.current.fiambres?.length || 0) > 0 || (this.current.proteinas?.length || 0) > 0));
+                    if (!hasSandwichBase) {
+                        this.finalizeOrder(order);
+                        this.resetCurrentOrder();
+                        return;
+                    }
+
+                    this.openUpsell(order);
+                },
+
+                skipUpsell() {
+                    if (!this.pendingOrder) {
+                        return;
+                    }
+
+                    this.finalizeOrder(this.pendingOrder);
+                    this.resetUpsell();
+                    this.resetCurrentOrder();
+                },
+
+                confirmUpsell() {
+                    if (!this.pendingOrder) {
+                        return;
+                    }
+
+                    const extraDetails = this.upsellItems().map((item) => {
+                        const qty = item.qty || 1;
+                        const qtyText = qty > 1 ? ` x${qty}` : '';
+                        const portionText = item.portion ? ` (${item.portion})` : '';
+                        return `${item.name}${qtyText}${portionText}`;
+                    }).join(', ');
+
+                    const finalOrder = {
+                        ...this.pendingOrder,
+                        description: extraDetails
+                            ? (this.pendingOrder.description ? `${this.pendingOrder.description} · ${extraDetails}` : extraDetails)
+                            : this.pendingOrder.description,
+                        price: this.pendingOrder.price + this.upsellTotal()
+                    };
+
+                    this.finalizeOrder(finalOrder);
+                    this.resetUpsell();
+                    this.resetCurrentOrder();
+                },
+
+                itemIcon(item) {
+                    return item?.emoji || '';
+                },
+
+                findItemById(catId, itemId) {
+                    const category = this.menu.find((cat) => cat.id === catId);
+                    return category?.items.find((item) => item.id === itemId) || null;
+                },
+
+                materializePresetItems(catId, items) {
+                    return (items || []).map((entry) => {
+                        const item = this.findItemById(catId, entry.id);
+                        if (!item) return null;
+                        return {
+                            ...item,
+                            qty: Math.min(2, Math.max(1, entry.qty || 1))
+                        };
+                    }).filter(Boolean);
+                },
+
+                getItemQty(catId, itemId) {
+                    if (catId === 'pan') {
+                        return this.current.pan?.id === itemId ? 1 : 0;
+                    }
+                    const found = this.current[catId].find((x) => x.id === itemId);
+                    return found?.qty || 0;
+                },
+
+                itemMeta(item, catId) {
+                    const qty = this.getItemQty(catId, item.id);
+                    const portion = item.portion ? ` · ${item.portion}` : '';
+                    const extra = qty > 1 ? ` · x${qty}` : '';
+                    return `+$${item.price}${portion}${extra}`;
+                },
+
+                formatLayerName(item) {
+                    const qty = item.qty || 1;
+                    return qty > 1 ? `${item.name} x${qty}` : item.name;
+                },
+
+                selectedDetails() {
+                    const details = this.selectedItems().map((item) => {
+                        const qty = item.qty || 1;
+                        const qtyText = qty > 1 ? ` x${qty}` : '';
+                        const portionText = item.portion ? ` (${qty > 1 ? `${item.portion} c/u` : item.portion})` : '';
+                        return `${item.name}${qtyText}${portionText}`;
+                    });
+
+                    if (this.activePreset) {
+                        if (details.length === 0) {
+                            return this.activePreset.description;
+                        }
+                        return `${this.activePreset.description} · ${details.join(', ')}`;
+                    }
+
+                    return details.join(', ');
+                },
+
+                isSelected(catId, itemId) {
+                    if (catId === 'pan') return this.current.pan?.id === itemId;
+                    return this.current[catId].some((x) => x.id === itemId);
+                },
+
+                toggleItem(cat, item) {
+                    if (this.requiresPan(cat.id) && !this.current.pan) {
+                        return;
+                    }
+
+                    if (cat.rule === 'single') {
+                        this.current[cat.id] = this.current[cat.id]?.id === item.id ? null : item;
+                    } else {
+                        const idx = this.current[cat.id].findIndex((x) => x.id === item.id);
+                        const maxQty = this.maxQtyForCategory(cat.id);
+                        if (idx < 0) {
+                            this.current[cat.id].push({ ...item, qty: 1 });
+                        } else if ((this.current[cat.id][idx].qty || 1) < maxQty) {
+                            this.current[cat.id][idx].qty += 1;
+                        } else {
+                            this.current[cat.id].splice(idx, 1);
+                        }
+                    }
+
+                    this.priceBump = true;
+                    setTimeout(() => {
+                        this.priceBump = false;
+                    }, 300);
+                    this.refreshIcons();
+                },
+
+                currentPrice() {
+                    let total = this.activePreset?.price || this.current.pan?.price || 0;
+                    this.selectedItems().forEach((item) => {
+                        total += item.price * (item.qty || 1);
+                    });
+                    return total;
+                },
+
+                getLayers() {
+                    if (!this.current.pan) return [];
+                    return [
+                        this.current.pan,
+                        ...this.current.fiambres,
+                        ...this.current.proteinas,
+                        ...this.current.vegetales,
+                        ...this.current.aderezos
+                    ];
+                },
+
+                canAddToCart() {
+                    const hasPreset = !!this.activePreset;
+                    const hasSandwich = !!this.current.pan && ((this.current.fiambres?.length || 0) > 0 || (this.current.proteinas?.length || 0) > 0);
+                    const hasDrinks = (this.current.bebidas?.length || 0) > 0;
+                    const hasSides = (this.current.acompanamientos?.length || 0) > 0;
+                    return hasPreset || hasSandwich || hasDrinks || hasSides;
+                },
+
+                addToCart() {
+                    if (!this.canAddToCart()) {
+                        return;
+                    }
+
+                    const isDrinkOnly = !this.activePreset && !this.current.pan && (this.current.bebidas?.length || 0) > 0;
+                    this.cart.push({
+                        title: isDrinkOnly ? 'Bebidas' : (this.activePreset?.name || `Sanguche ${this.current.pan?.name || 'Personalizado'}`),
+                        description: this.selectedDetails(),
+                        price: this.currentPrice()
+                    });
+                    this.current = this.createCurrentState(this.menu);
+                    this.activePreset = null;
+                    this.refreshIcons();
+                },
+
+                applyPreset(preset) {
+                    const nextState = this.createCurrentState(this.menu);
+                    nextState.pan = this.findItemById('pan', preset.ingredients?.pan) || null;
+                    nextState.fiambres = this.materializePresetItems('fiambres', preset.ingredients?.fiambres);
+                    nextState.proteinas = this.materializePresetItems('proteinas', preset.ingredients?.proteinas);
+                    nextState.vegetales = this.materializePresetItems('vegetales', preset.ingredients?.vegetales);
+                    nextState.aderezos = this.materializePresetItems('aderezos', preset.ingredients?.aderezos);
+                    this.current = nextState;
+                    this.activePreset = null;
+                    this.priceBump = true;
+                    setTimeout(() => {
+                        this.priceBump = false;
+                    }, 300);
+                    this.refreshIcons();
+                    document.getElementById('builder')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                },
+
+                addPresetToCart(preset) {
+                    this.cart.push({
+                        title: preset.name,
+                        description: preset.description,
+                        price: preset.price
+                    });
+                    this.cartOpen = true;
+                    this.refreshIcons();
+                },
+
+                finalizePurchase() {
+                    if (this.cart.length === 0) {
+                        return;
+                    }
+
+                    alert('Compra finalizada. Gracias por tu pedido.');
+                    this.cart = [];
+                    this.cartOpen = false;
+                    this.refreshIcons();
+                },
+
+                cartTotal() {
+                    return this.cart.reduce((sum, item) => sum + item.price, 0);
+                }
+            };
+        }
+    </script>
+</body>
+</html>
