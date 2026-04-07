@@ -1,0 +1,168 @@
+{
+  "sandwiches": [
+    {
+      "id": "clasico_jamon_queso",
+      "name": "Clasico Jamon y Queso",
+      "description": "Ciabatta suave, perfil clasico y equilibrio perfecto para todos los dias.",
+      "price": 2900,
+      "image": "https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=900&q=80",
+      "ingredients": {
+        "pan": "ciabatta",
+        "fiambres": [
+          { "id": "jamon_cocido", "qty": 1 },
+          { "id": "queso", "qty": 1 }
+        ],
+        "proteinas": [],
+        "vegetales": [],
+        "aderezos": [
+          { "id": "mayonesa", "qty": 1 }
+        ]
+      }
+    },
+    {
+      "id": "crudo_fresco",
+      "name": "Crudo Fresco",
+      "description": "Frances crocante con jamon crudo, tomate y un cierre bien fresco.",
+      "price": 3650,
+      "image": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",
+      "ingredients": {
+        "pan": "frances",
+        "fiambres": [
+          { "id": "jamon_crudo", "qty": 1 }
+        ],
+        "proteinas": [],
+        "vegetales": [
+          { "id": "tomate", "qty": 1 }
+        ],
+        "aderezos": [
+          { "id": "mostaza", "qty": 1 }
+        ]
+      }
+    },
+    {
+      "id": "mila_full",
+      "name": "Mila Full",
+      "description": "Figazza con milanesa de carne, huevo y barbacoa para un antojo contundente.",
+      "price": 4550,
+      "image": "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=900&q=80",
+      "ingredients": {
+        "pan": "figazza",
+        "fiambres": [],
+        "proteinas": [
+          { "id": "milanesa_carne", "qty": 1 }
+        ],
+        "vegetales": [
+          { "id": "huevo", "qty": 1 }
+        ],
+        "aderezos": [
+          { "id": "barbacoa", "qty": 1 }
+        ]
+      }
+    },
+    {
+      "id": "pollo_fresco",
+      "name": "Pollo Fresco",
+      "description": "Pan frances con milanesa de pollo, lechuga, tomate y mayonesa. Va al grano y entra facil.",
+      "price": 4050,
+      "image": "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=900&q=80",
+      "ingredients": {
+        "pan": "frances",
+        "fiambres": [],
+        "proteinas": [
+          { "id": "milanesa_pollo", "qty": 1 }
+        ],
+        "vegetales": [
+          { "id": "lechuga", "qty": 1 },
+          { "id": "tomate", "qty": 1 }
+        ],
+        "aderezos": [
+          { "id": "mayonesa", "qty": 1 }
+        ]
+      }
+    },
+    {
+      "id": "doble_queso",
+      "name": "Doble Queso",
+      "description": "Ciabatta con jamon cocido, doble queso y mostaza. Bien deli, bien directo.",
+      "price": 3900,
+      "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80",
+      "ingredients": {
+        "pan": "ciabatta",
+        "fiambres": [
+          { "id": "jamon_cocido", "qty": 1 },
+          { "id": "queso", "qty": 2 }
+        ],
+        "proteinas": [],
+        "vegetales": [],
+        "aderezos": [
+          { "id": "mostaza", "qty": 1 }
+        ]
+      }
+    },
+    {
+      "id": "verde_total",
+      "name": "Verde Total",
+      "description": "Figazza con queso, huevo, lechuga y tomate. Liviano, fresco y con bastante volumen visual.",
+      "price": 3350,
+      "image": "https://images.unsplash.com/photo-1540713434306-58505cf1b6fc?auto=format&fit=crop&w=900&q=80",
+      "ingredients": {
+        "pan": "figazza",
+        "fiambres": [
+          { "id": "queso", "qty": 1 }
+        ],
+        "proteinas": [],
+        "vegetales": [
+          { "id": "lechuga", "qty": 1 },
+          { "id": "tomate", "qty": 1 },
+          { "id": "huevo", "qty": 1 }
+        ],
+        "aderezos": [
+          { "id": "mayonesa", "qty": 1 }
+        ]
+      }
+    },
+    {
+      "id": "crudo_bravo",
+      "name": "Crudo Bravo",
+      "description": "Ciabatta con jamon crudo, queso, tomate y barbacoa. Salado, intenso y con cierre ahumado.",
+      "price": 4700,
+      "image": "https://images.unsplash.com/photo-1551782450-17144efb9c50?auto=format&fit=crop&w=900&q=80",
+      "ingredients": {
+        "pan": "ciabatta",
+        "fiambres": [
+          { "id": "jamon_crudo", "qty": 1 },
+          { "id": "queso", "qty": 1 }
+        ],
+        "proteinas": [],
+        "vegetales": [
+          { "id": "tomate", "qty": 1 }
+        ],
+        "aderezos": [
+          { "id": "barbacoa", "qty": 1 }
+        ]
+      }
+    },
+    {
+      "id": "mila_doble",
+      "name": "Mila Doble",
+      "description": "Frances con milanesa de carne, queso, huevo y ketchup. Un clasico pesado para ir sin vueltas.",
+      "price": 4950,
+      "image": "https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&w=900&q=80",
+      "ingredients": {
+        "pan": "frances",
+        "fiambres": [
+          { "id": "queso", "qty": 1 }
+        ],
+        "proteinas": [
+          { "id": "milanesa_carne", "qty": 1 }
+        ],
+        "vegetales": [
+          { "id": "huevo", "qty": 1 }
+        ],
+        "aderezos": [
+          { "id": "ketchup", "qty": 1 }
+        ]
+      }
+    }
+  ]
+}

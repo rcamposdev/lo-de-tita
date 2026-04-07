@@ -1,0 +1,81 @@
+{
+  "categories": [
+    {
+      "id": "pan",
+      "label": "El Pan",
+      "emoji": "🍞",
+      "rule": "single",
+      "items": [
+        { "id": "ciabatta", "name": "Ciabatta", "price": 800, "emoji": "🥯" },
+        { "id": "figazza", "name": "Figazza", "price": 700, "emoji": "🍞" },
+        { "id": "frances", "name": "Francés", "price": 600, "emoji": "🥖" }
+      ]
+    },
+    {
+      "id": "fiambres",
+      "label": "Fiambres",
+      "emoji": "🍖",
+      "rule": "multiple",
+      "items": [
+        { "id": "jamon_cocido", "name": "Jamón Cocido", "price": 1200, "emoji": "🍖", "portion": "50 g" },
+        { "id": "queso", "name": "Queso", "price": 900, "emoji": "🧀", "portion": "50 g" },
+        { "id": "jamon_crudo", "name": "Jamón Crudo", "price": 1800, "emoji": "🥩", "portion": "50 g" }
+      ]
+    },
+    {
+      "id": "proteinas",
+      "label": "Proteínas",
+      "emoji": "🍗",
+      "rule": "multiple",
+      "items": [
+        { "id": "milanesa_carne", "name": "Milanesa de Carne", "price": 2200, "emoji": "🥩", "portion": "1 unidad" },
+        { "id": "milanesa_pollo", "name": "Milanesa de Pollo", "price": 2100, "emoji": "🍗", "portion": "1 unidad" }
+      ]
+    },
+    {
+      "id": "vegetales",
+      "label": "Vegetales",
+      "emoji": "🥬",
+      "rule": "multiple",
+      "items": [
+        { "id": "lechuga", "name": "Lechuga", "price": 300, "emoji": "🥬", "portion": "30 g" },
+        { "id": "tomate", "name": "Tomate", "price": 350, "emoji": "🍅", "portion": "40 g" },
+        { "id": "huevo", "name": "Huevo", "price": 500, "emoji": "🍳", "portion": "1/2 unidad" }
+      ]
+    },
+    {
+      "id": "aderezos",
+      "label": "Aderezos",
+      "emoji": "🫙",
+      "rule": "multiple",
+      "items": [
+        { "id": "mayonesa", "name": "Mayonesa", "price": 200, "emoji": "🥣", "portion": "15 g" },
+        { "id": "mostaza", "name": "Mostaza", "price": 150, "emoji": "🟡", "portion": "15 g" },
+        { "id": "ketchup", "name": "Ketchup", "price": 180, "emoji": "🍅", "portion": "15 g" },
+        { "id": "barbacoa", "name": "Barbacoa", "price": 220, "emoji": "🔥", "portion": "15 g" }
+      ]
+    },
+    {
+      "id": "bebidas",
+      "label": "Bebidas",
+      "emoji": "🥤",
+      "rule": "multiple",
+      "items": [
+        { "id": "agua", "name": "Agua", "price": 900, "emoji": "💧", "portion": "500 ml" },
+        { "id": "coca", "name": "Coca-Cola", "price": 1400, "emoji": "🥤", "portion": "500 ml" },
+        { "id": "cerveza", "name": "Cerveza", "price": 1800, "emoji": "🍺", "portion": "473 ml" }
+      ]
+    },
+    {
+      "id": "acompanamientos",
+      "label": "Extras",
+      "emoji": "✨",
+      "rule": "multiple",
+      "items": [
+        { "id": "papas_clasicas", "name": "Papas fritas", "price": 1500, "emoji": "🍟", "portion": "medianas" },
+        { "id": "batatas_fritas", "name": "Batatas fritas", "price": 1700, "emoji": "🍠", "portion": "medianas" },
+        { "id": "brownie", "name": "Brownie", "price": 1600, "emoji": "🍫", "portion": "1 porcion" }
+      ]
+    }
+  ]
+}
