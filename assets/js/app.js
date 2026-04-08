@@ -1,4 +1,5 @@
 const GOOGLE_SHEETS_ID = '1hgfQc8dkvFAEuFU9a9walmsq_wj7FQQQwYW9oXzYWPY';
+const WHATSAPP_NUMBER = '5491138587614';
 
 const SHEET_NAMES = {
     categories: 'categories',
@@ -666,7 +667,7 @@ function landingApp() {
                 return;
             }
 
-            alert('Compra finalizada. Gracias por tu pedido.');
+            this.sendOrderToWhatsApp();
             this.cart = [];
             this.cartOpen = false;
             this.refreshIcons();
@@ -683,6 +684,43 @@ function landingApp() {
 
         cartTotal() {
             return this.cart.reduce((sum, item) => sum + item.price, 0);
+        },
+
+        formatPrice(value) {
+            return `$${this.asNumber(value, 0)}`;
+        },
+
+        buildWhatsAppMessage() {
+            const lines = [
+                'Hola! Quiero hacer un pedido 🥪',
+                '',
+                '📋 *Detalle del pedido:*'
+            ];
+
+            this.cart.forEach((item, index) => {
+                lines.push(`${index + 1}. *${item.title}* - ${this.formatPrice(item.price)}`);
+                if (item.description) {
+                    lines.push(`   ${item.description}`);
+                }
+            });
+
+            lines.push('');
+            lines.push(`💵 *Total:* ${this.formatPrice(this.cartTotal())}`);
+            lines.push('');
+            lines.push('Gracias! 🙌');
+
+            return lines.join('\n');
+        },
+
+        sendOrderToWhatsApp() {
+            const sanitizedNumber = String(WHATSAPP_NUMBER).replace(/\D/g, '');
+            if (!sanitizedNumber || this.cart.length === 0) {
+                return;
+            }
+
+            const message = this.buildWhatsAppMessage();
+            const whatsappUrl = `https://wa.me/${sanitizedNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
         }
     };
 }
