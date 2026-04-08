@@ -691,10 +691,15 @@ function landingApp() {
         },
 
         buildWhatsAppMessage() {
+            const sandwichEmoji = '\uD83E\uDD6A';
+            const clipboardEmoji = '\uD83D\uDCCB';
+            const moneyEmoji = '\uD83D\uDCB5';
+            const thanksEmoji = '\uD83D\uDE4C';
+
             const lines = [
-                'Hola! Quiero hacer un pedido 🥪',
+                `Hola! Quiero hacer un pedido ${sandwichEmoji}`,
                 '',
-                '📋 *Detalle del pedido:*'
+                `${clipboardEmoji} *Detalle del pedido:*`
             ];
 
             this.cart.forEach((item, index) => {
@@ -705,9 +710,9 @@ function landingApp() {
             });
 
             lines.push('');
-            lines.push(`💵 *Total:* ${this.formatPrice(this.cartTotal())}`);
+            lines.push(`${moneyEmoji} *Total:* ${this.formatPrice(this.cartTotal())}`);
             lines.push('');
-            lines.push('Gracias! 🙌');
+            lines.push(`Gracias! ${thanksEmoji}`);
 
             return lines.join('\n');
         },
