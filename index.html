@@ -276,7 +276,7 @@
             </section>
         </main>
 
-        <nav class="mobile-bottom-nav" aria-label="Navegacion inferior">
+        <nav class="mobile-bottom-nav" aria-label="Navegacion inferior" x-show="!cartOpen && !upsellOpen && !checkoutSweetOpen" x-cloak>
             <button class="mobile-nav-item" @click="cartOpen = true; refreshIcons()" aria-label="Ver pedido">
                 <span class="mobile-nav-icon-wrap">
                     <i data-lucide="shopping-bag" class="ui-icon"></i>
