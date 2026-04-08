@@ -14,7 +14,7 @@
 
 </head>
 <body>
-    <div x-data="landingApp()" x-init="init()" x-cloak>
+    <div x-data="landingApp()" x-init="init()" x-cloak class="app-frame">
         <header class="topbar">
             <div class="topbar-inner">
                 <a href="#hero" class="brand">
@@ -275,6 +275,34 @@
                 </div>
             </section>
         </main>
+
+        <nav class="mobile-bottom-nav" aria-label="Navegacion inferior">
+            <button class="mobile-nav-item" @click="cartOpen = true; refreshIcons()" aria-label="Ver pedido">
+                <span class="mobile-nav-icon-wrap">
+                    <i data-lucide="shopping-bag" class="ui-icon"></i>
+                    <span class="mobile-nav-badge" x-show="cart.length > 0" x-text="cart.length" x-cloak></span>
+                </span>
+                <span class="mobile-nav-label">Ver pedido</span>
+            </button>
+            <a class="mobile-nav-item" href="#builder" aria-label="Arma el tuyo">
+                <span class="mobile-nav-icon-wrap">
+                    <i data-lucide="sandwich" class="ui-icon"></i>
+                </span>
+                <span class="mobile-nav-label">Arma el tuyo</span>
+            </a>
+            <a class="mobile-nav-item" href="#destacados" aria-label="Destacados">
+                <span class="mobile-nav-icon-wrap">
+                    <i data-lucide="star" class="ui-icon"></i>
+                </span>
+                <span class="mobile-nav-label">Destacados</span>
+            </a>
+            <a class="mobile-nav-item" href="#contacto" aria-label="Contacto">
+                <span class="mobile-nav-icon-wrap">
+                    <i data-lucide="message-circle-more" class="ui-icon"></i>
+                </span>
+                <span class="mobile-nav-label">Contacto</span>
+            </a>
+        </nav>
 
         <footer class="section">
             <div class="site-shell">

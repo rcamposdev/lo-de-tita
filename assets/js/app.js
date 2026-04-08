@@ -478,7 +478,8 @@ function landingApp() {
                 if (!item) return null;
                 return {
                     ...item,
-                    qty: Math.min(2, Math.max(1, entry.qty || 1))
+                    qty: Math.min(2, Math.max(1, entry.qty || 1)),
+                    fromPreset: true
                 };
             }).filter(Boolean);
         },
@@ -538,6 +539,8 @@ function landingApp() {
                 const maxQty = this.maxQtyForCategory(cat.id);
                 if (idx < 0) {
                     this.current[cat.id].push({ ...item, qty: 1 });
+                } else if (this.current[cat.id][idx].fromPreset) {
+                    this.current[cat.id].splice(idx, 1);
                 } else if ((this.current[cat.id][idx].qty || 1) < maxQty) {
                     this.current[cat.id][idx].qty += 1;
                 } else {
