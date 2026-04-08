@@ -1,0 +1,93 @@
+# =========================
+# Sistema operativo
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# Variables de entorno / secretos
+# =========================
+.env
+.env.*
+*.local
+
+# =========================
+# Dependencias
+# =========================
+node_modules/
+vendor/
+packages/
+
+# =========================
+# Build / outputs
+# =========================
+dist/
+build/
+out/
+coverage/
+.tmp/
+.temp/
+.cache/
+
+# =========================
+# Archivos comprimidos
+# =========================
+*.zip
+*.tar
+*.gz
+*.rar
+
+# =========================
+# IDEs / Editores
+# =========================
+
+## VS Code
+.vscode/
+
+## Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## JetBrains
+.idea/
+*.iml
+
+# =========================
+# Binarios / compilados
+# =========================
+bin/
+obj/
+*.exe
+*.dll
+*.so
+*.dylib
+*.class
+
+# =========================
+# Testing
+# =========================
+coverage/
+TestResults/
+
+# =========================
+# Docker
+# =========================
+docker-compose.override.yml
+
+# =========================
+# Otros
+# =========================
+*.swp
+*.bak
+*.tmp
+*.cache
