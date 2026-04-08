@@ -194,9 +194,41 @@
         .cart-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             gap: 12px;
             padding: 10px 0;
             border-bottom: 1px solid var(--line);
+        }
+
+        .cart-row-copy {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .cart-row-actions {
+            display: grid;
+            justify-items: end;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .cart-row-price {
+            white-space: nowrap;
+        }
+
+        .cart-remove {
+            border: none;
+            background: transparent;
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .cart-remove:active {
+            transform: scale(0.98);
         }
 
         .cart-empty {
@@ -1255,7 +1287,7 @@
                             </div>
 
                             <div class="builder-options">
-                                <template x-for="cat in menu" :key="cat.id">
+                                <template x-for="cat in builderCategories()" :key="cat.id">
                                     <section class="builder-category">
                                         <div class="category-header">
                                             <span class="icon-chip"><i :data-lucide="iconForCategory(cat.id)" class="ui-icon"></i></span>
@@ -1381,8 +1413,8 @@
                 <div class="upsell-modal">
                     <div class="upsell-copy">
                         <div class="section-kicker">Ultimo paso</div>
-                        <h2 class="section-title" style="font-size:2rem;">Queres sumar algo mas?</h2>
-                        <p>Podés agregar bebidas o extras antes de mandarlo al pedido.</p>
+                        <h2 class="section-title" style="font-size:2rem;">Le sumamos bebidas o guarniciones?</h2>
+                        <p>Podés agregar bebidas y papas o batatas antes de mandarlo al pedido.</p>
                     </div>
                     <div class="upsell-grid">
                         <template x-for="item in upsellCatalog()" :key="item.id">
@@ -1399,8 +1431,39 @@
                         </template>
                     </div>
                     <div class="upsell-actions">
-                        <button class="cart-action-secondary" @click="skipUpsell()">Seguir sin extras</button>
+                        <button class="cart-action-secondary" @click="skipUpsell()">No, gracias</button>
                         <button class="cart-action-primary" @click="confirmUpsell()">Agregar al pedido</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="checkoutSweetOpen">
+            <div>
+                <div class="upsell-overlay" @click="skipCheckoutSweet()"></div>
+                <div class="upsell-modal">
+                    <div class="upsell-copy">
+                        <div class="section-kicker">Antes de cerrar</div>
+                        <h2 class="section-title" style="font-size:2rem;">No queres nada dulce?</h2>
+                        <p>Podés sumar algo dulce para compartir antes de confirmar la compra.</p>
+                    </div>
+                    <div class="upsell-grid">
+                        <template x-for="item in checkoutSweetCatalog()" :key="item.id">
+                            <button class="upsell-item" :class="{ selected: getCheckoutSweetQty(item.id) > 0 }" @click="toggleCheckoutSweet(item)">
+                                <span class="icon-chip">
+                                    <span class="ingredient-emoji" x-text="item.emoji"></span>
+                                </span>
+                                <span class="upsell-item-copy">
+                                    <span class="upsell-item-name" x-text="item.name"></span>
+                                    <span class="upsell-item-meta" x-text="`+$${item.price}${item.portion ? ` · ${item.portion}` : ''}`"></span>
+                                </span>
+                                <span class="upsell-qty" x-show="getCheckoutSweetQty(item.id) > 0" x-text="`x${getCheckoutSweetQty(item.id)}`"></span>
+                            </button>
+                        </template>
+                    </div>
+                    <div class="upsell-actions">
+                        <button class="cart-action-secondary" @click="skipCheckoutSweet()">Finalizar sin dulce</button>
+                        <button class="cart-action-primary" @click="confirmCheckoutSweet()">Agregar y finalizar</button>
                     </div>
                 </div>
             </div>
@@ -1414,11 +1477,14 @@
                     <div class="cart-list" x-show="cart.length > 0">
                         <template x-for="(item, idx) in cart" :key="`${item.title}-${idx}`">
                             <div class="cart-row">
-                                <div>
+                                <div class="cart-row-copy">
                                     <div class="pill-name" x-text="item.title"></div>
                                     <div class="pill-price" x-text="item.description"></div>
                                 </div>
-                                <div class="pill-name" x-text="`$${item.price}`"></div>
+                                <div class="cart-row-actions">
+                                    <div class="pill-name cart-row-price" x-text="`$${item.price}`"></div>
+                                    <button class="cart-remove" @click="removeCartItem(idx)">Eliminar</button>
+                                </div>
                             </div>
                         </template>
                     </div>
@@ -1449,6 +1515,8 @@
                 pendingOrder: null,
                 upsellOpen: false,
                 upsellSelection: {},
+                checkoutSweetOpen: false,
+                checkoutSweetSelection: {},
                 cart: [],
                 cartOpen: false,
                 priceBump: false,
@@ -1524,6 +1592,10 @@
                     });
                 },
 
+                builderCategories() {
+                    return this.menu.filter((cat) => !['bebidas', 'acompanamientos'].includes(cat.id));
+                },
+
                 maxQtyForCategory(catId) {
                     if (catId === 'bebidas') return 6;
                     if (catId === 'acompanamientos') return 4;
@@ -1533,7 +1605,43 @@
                 upsellCatalog() {
                     return this.menu
                         .filter((cat) => ['bebidas', 'acompanamientos'].includes(cat.id))
-                        .flatMap((cat) => cat.items.map((item) => ({ ...item, categoryId: cat.id })));
+                        .flatMap((cat) => cat.items.map((item) => ({ ...item, categoryId: cat.id })))
+                        .filter((item) => !this.isSweetUpsell(item));
+                },
+
+                isSweetUpsell(item) {
+                    return ['brownie'].includes(item.id);
+                },
+
+                checkoutSweetCatalog() {
+                    return this.menu
+                        .filter((cat) => cat.id === 'acompanamientos')
+                        .flatMap((cat) => cat.items.map((item) => ({ ...item, categoryId: cat.id })))
+                        .filter((item) => this.isSweetUpsell(item));
+                },
+
+                getCheckoutSweetQty(itemId) {
+                    return this.checkoutSweetSelection[itemId]?.qty || 0;
+                },
+
+                toggleCheckoutSweet(item) {
+                    const currentQty = this.getCheckoutSweetQty(item.id);
+                    const maxQty = this.maxQtyForCategory(item.categoryId);
+                    if (currentQty === 0) {
+                        this.checkoutSweetSelection[item.id] = { ...item, qty: 1 };
+                    } else if (currentQty < maxQty) {
+                        this.checkoutSweetSelection[item.id].qty += 1;
+                    } else {
+                        delete this.checkoutSweetSelection[item.id];
+                    }
+                },
+
+                checkoutSweetItems() {
+                    return Object.values(this.checkoutSweetSelection);
+                },
+
+                checkoutSweetTotal() {
+                    return this.checkoutSweetItems().reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
                 },
 
                 getUpsellQty(itemId) {
@@ -1580,6 +1688,11 @@
                     this.pendingOrder = null;
                     this.upsellSelection = {};
                     this.upsellOpen = false;
+                },
+
+                resetCheckoutSweet() {
+                    this.checkoutSweetSelection = {};
+                    this.checkoutSweetOpen = false;
                 },
 
                 resetCurrentOrder() {
@@ -1629,7 +1742,6 @@
                     if (!this.pendingOrder) {
                         return;
                     }
-
                     this.finalizeOrder(this.pendingOrder);
                     this.resetUpsell();
                     this.resetCurrentOrder();
@@ -1824,9 +1936,58 @@
                         return;
                     }
 
+                    if (this.checkoutSweetCatalog().length > 0) {
+                        this.checkoutSweetOpen = true;
+                        this.refreshIcons();
+                        return;
+                    }
+
+                    this.completePurchase();
+                },
+
+                skipCheckoutSweet() {
+                    this.resetCheckoutSweet();
+                    this.completePurchase();
+                },
+
+                confirmCheckoutSweet() {
+                    const sweetItems = this.checkoutSweetItems();
+                    if (sweetItems.length > 0) {
+                        const sweetDetails = sweetItems.map((item) => {
+                            const qty = item.qty || 1;
+                            const qtyText = qty > 1 ? ` x${qty}` : '';
+                            const portionText = item.portion ? ` (${item.portion})` : '';
+                            return `${item.name}${qtyText}${portionText}`;
+                        }).join(', ');
+
+                        this.cart.push({
+                            title: 'Algo dulce',
+                            description: sweetDetails,
+                            price: this.checkoutSweetTotal()
+                        });
+                    }
+
+                    this.resetCheckoutSweet();
+                    this.completePurchase();
+                },
+
+                completePurchase() {
+                    if (this.cart.length === 0) {
+                        return;
+                    }
+
                     alert('Compra finalizada. Gracias por tu pedido.');
                     this.cart = [];
                     this.cartOpen = false;
+                    this.refreshIcons();
+                },
+
+                removeCartItem(index) {
+                    if (index < 0 || index >= this.cart.length) {
+                        return;
+                    }
+
+                    this.cart.splice(index, 1);
                     this.refreshIcons();
                 },
 
