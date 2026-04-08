@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Lo de Tita | Landing</title>
+    <title>Lo de Tita | Sanguches familiares hechos con amor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
@@ -1363,21 +1363,13 @@
                         <h2 class="section-title">Calendario de sánguches</h2>
                         <p class="section-text">Especiales de la semana. Rotan según stock y temporada.</p>
                         <div class="news-list">
-                            <div class="news-item">
-                                <span class="news-day">Lunes</span>
-                                <span class="news-name">Mila Full + limonada</span>
-                                <span class="news-badge">Promo</span>
-                            </div>
-                            <div class="news-item">
-                                <span class="news-day">Miércoles</span>
-                                <span class="news-name">Crudo Bravo</span>
-                                <span class="news-badge">Nuevo</span>
-                            </div>
-                            <div class="news-item">
-                                <span class="news-day">Viernes</span>
-                                <span class="news-name">Doble Queso</span>
-                                <span class="news-badge">Top</span>
-                            </div>
+                            <template x-for="item in calendar" :key="`${item.day}-${item.name}`">
+                                <div class="news-item">
+                                    <span class="news-day" x-text="item.day"></span>
+                                    <span class="news-name" x-text="item.name"></span>
+                                    <span class="news-badge" x-text="item.badge"></span>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -1503,13 +1495,20 @@
     </div>
 
     <script>
-        const DATA_SOURCE = './data/categories.json';
-        const PRESETS_SOURCE = './data/presets.json';
+        const GOOGLE_SHEETS_ID = '1hgfQc8dkvFAEuFU9a9walmsq_wj7FQQQwYW9oXzYWPY';
+        const SHEET_NAMES = {
+            categories: 'categories',
+            ingredients: 'ingredients',
+            sandwiches: 'sandwiches',
+            sandwichesIngredients: 'sandwiches_ingredients',
+            calendar: 'calendar'
+        };
 
         function landingApp() {
             return {
                 menu: [],
                 presets: [],
+                calendar: [],
                 current: { pan: null },
                 activePreset: null,
                 pendingOrder: null,
@@ -1517,41 +1516,228 @@
                 upsellSelection: {},
                 checkoutSweetOpen: false,
                 checkoutSweetSelection: {},
+                sheetRowsCache: {},
                 cart: [],
                 cartOpen: false,
                 priceBump: false,
 
                 async init() {
-                    const [menu, presets] = await Promise.all([
-                        this.loadMenu(),
-                        this.loadPresets()
-                    ]);
-                    this.menu = menu;
-                    this.presets = presets;
-                    this.current = this.createCurrentState(this.menu);
-                    this.refreshIcons();
-                    this.$watch('cartOpen', () => this.refreshIcons());
+                    try {
+                        const [menu, presets, calendar] = await Promise.all([
+                            this.loadMenu(),
+                            this.loadPresets(),
+                            this.loadCalendar()
+                        ]);
+                        this.menu = menu;
+                        this.presets = presets;
+                        this.calendar = calendar;
+                        this.current = this.createCurrentState(this.menu);
+                        this.refreshIcons();
+                        this.$watch('cartOpen', () => this.refreshIcons());
+                    } catch (error) {
+                        throw new Error(`No se pudieron cargar datos desde Google Sheets: ${error.message}`);
+                    }
                 },
 
                 async loadMenu() {
-                    const response = await fetch(DATA_SOURCE);
-                    if (!response.ok) {
-                        throw new Error('No se encontro ./data/categories.json');
-                    }
-                    const payload = await response.json();
-                    return payload.categories || [];
+                    const [categoryRows, ingredientRows] = await Promise.all([
+                        this.getSheetRows(SHEET_NAMES.categories),
+                        this.getSheetRows(SHEET_NAMES.ingredients)
+                    ]);
+                    return this.buildMenuFromSheets(categoryRows, ingredientRows);
                 },
 
                 async loadPresets() {
-                    try {
-                        const response = await fetch(PRESETS_SOURCE);
-                        if (!response.ok) return [];
-                        const payload = await response.json();
-                        return payload.sandwiches || [];
-                    } catch (error) {
-                        console.error('No se pudo cargar ./data/presets.json');
-                        return [];
+                    const [sandwichRows, sandwichIngredientRows, ingredientRows] = await Promise.all([
+                        this.getSheetRows(SHEET_NAMES.sandwiches),
+                        this.getSheetRows(SHEET_NAMES.sandwichesIngredients),
+                        this.getSheetRows(SHEET_NAMES.ingredients)
+                    ]);
+                    return this.buildPresetsFromSheets(sandwichRows, sandwichIngredientRows, ingredientRows);
+                },
+
+                async loadCalendar() {
+                    const calendarRows = await this.getSheetRows(SHEET_NAMES.calendar);
+                    return this.buildCalendarFromSheets(calendarRows);
+                },
+
+                async getSheetRows(sheetName) {
+                    if (this.sheetRowsCache[sheetName]) {
+                        return this.sheetRowsCache[sheetName];
                     }
+
+                    const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_ID}/gviz/tq?sheet=${encodeURIComponent(sheetName)}&headers=1&tq=${encodeURIComponent('select *')}`;
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`No se pudo leer la hoja ${sheetName}`);
+                    }
+
+                    const rawText = await response.text();
+                    const jsonStart = rawText.indexOf('{');
+                    const jsonEnd = rawText.lastIndexOf('}');
+                    if (jsonStart < 0 || jsonEnd < 0) {
+                        throw new Error(`Respuesta invalida para la hoja ${sheetName}`);
+                    }
+
+                    const parsed = JSON.parse(rawText.slice(jsonStart, jsonEnd + 1));
+                    const table = parsed.table;
+                    const headers = (table?.cols || []).map((col, idx) => (col?.label || col?.id || `col_${idx}`).trim());
+
+                    const rows = (table?.rows || []).map((row) => {
+                        const obj = {};
+                        headers.forEach((header, idx) => {
+                            obj[header] = this.getSheetCellValue(row?.c?.[idx]);
+                        });
+                        return obj;
+                    });
+
+                    this.sheetRowsCache[sheetName] = rows;
+                    return rows;
+                },
+
+                getSheetCellValue(cell) {
+                    if (!cell) {
+                        return null;
+                    }
+                    return cell.v;
+                },
+
+                asText(value) {
+                    if (value === null || value === undefined) {
+                        return '';
+                    }
+                    return String(value).trim();
+                },
+
+                asNumber(value, fallback = 0) {
+                    const number = Number(value);
+                    return Number.isFinite(number) ? number : fallback;
+                },
+
+                asBoolean(value) {
+                    if (typeof value === 'boolean') {
+                        return value;
+                    }
+                    if (value === null || value === undefined || value === '') {
+                        return false;
+                    }
+                    const normalized = String(value).trim().toLowerCase();
+                    return ['true', '1', 'yes', 'si', 'y'].includes(normalized);
+                },
+
+                rowIsActive(row) {
+                    if (!Object.prototype.hasOwnProperty.call(row, 'active')) {
+                        return true;
+                    }
+                    return this.asBoolean(row.active);
+                },
+
+                buildMenuFromSheets(categoryRows, ingredientRows) {
+                    const sortedCategories = [...categoryRows]
+                        .filter((row) => this.rowIsActive(row) && this.asText(row.id))
+                        .sort((a, b) => this.asNumber(a.sort_order, 999) - this.asNumber(b.sort_order, 999));
+
+                    return sortedCategories.map((categoryRow) => {
+                        const categoryId = this.asText(categoryRow.id);
+                        const items = ingredientRows
+                            .filter((row) => this.rowIsActive(row) && this.asText(row.category_id) === categoryId && this.asText(row.id))
+                            .sort((a, b) => this.asNumber(a.sort_order, 999) - this.asNumber(b.sort_order, 999))
+                            .map((itemRow) => {
+                                const item = {
+                                    id: this.asText(itemRow.id),
+                                    name: this.asText(itemRow.name),
+                                    price: this.asNumber(itemRow.price, 0),
+                                    emoji: this.asText(itemRow.emoji)
+                                };
+                                const portion = this.asText(itemRow.portion);
+                                if (portion) {
+                                    item.portion = portion;
+                                }
+                                return item;
+                            });
+
+                        return {
+                            id: categoryId,
+                            label: this.asText(categoryRow.label),
+                            emoji: this.asText(categoryRow.emoji),
+                            rule: this.asText(categoryRow.rule) || 'multiple',
+                            items
+                        };
+                    });
+                },
+
+                buildPresetsFromSheets(sandwichRows, sandwichIngredientRows, ingredientRows) {
+                    const ingredientMap = ingredientRows.reduce((acc, row) => {
+                        const id = this.asText(row.id);
+                        if (id) {
+                            acc[id] = row;
+                        }
+                        return acc;
+                    }, {});
+
+                    const sortedSandwiches = [...sandwichRows]
+                        .filter((row) => this.rowIsActive(row) && this.asText(row.id))
+                        .sort((a, b) => this.asNumber(a.sort_order, 999) - this.asNumber(b.sort_order, 999));
+
+                    return sortedSandwiches.map((sandwichRow) => {
+                        const sandwichId = this.asText(sandwichRow.id);
+                        const links = sandwichIngredientRows
+                            .filter((row) => {
+                                const linkedId = this.asText(row.preset_id || row.sandwich_id);
+                                return linkedId === sandwichId;
+                            })
+                            .sort((a, b) => this.asNumber(a.sort_order, 999) - this.asNumber(b.sort_order, 999));
+
+                        const ingredients = {
+                            pan: null,
+                            fiambres: [],
+                            proteinas: [],
+                            vegetales: [],
+                            aderezos: []
+                        };
+
+                        links.forEach((linkRow) => {
+                            const itemId = this.asText(linkRow.item_id);
+                            const qty = Math.max(1, this.asNumber(linkRow.qty, 1));
+                            const linkedIngredient = ingredientMap[itemId];
+                            const categoryId = this.asText(linkRow.category_id || linkedIngredient?.category_id);
+                            if (!itemId || !categoryId) {
+                                return;
+                            }
+
+                            if (categoryId === 'pan') {
+                                ingredients.pan = itemId;
+                                return;
+                            }
+
+                            if (!Object.prototype.hasOwnProperty.call(ingredients, categoryId)) {
+                                return;
+                            }
+
+                            ingredients[categoryId].push({ id: itemId, qty });
+                        });
+
+                        return {
+                            id: sandwichId,
+                            name: this.asText(sandwichRow.name),
+                            description: this.asText(sandwichRow.description),
+                            price: this.asNumber(sandwichRow.price, 0),
+                            image: this.asText(sandwichRow.image),
+                            ingredients
+                        };
+                    });
+                },
+
+                buildCalendarFromSheets(calendarRows) {
+                    return [...calendarRows]
+                        .filter((row) => this.rowIsActive(row))
+                        .sort((a, b) => this.asNumber(a.sort_order, 999) - this.asNumber(b.sort_order, 999))
+                        .map((row) => ({
+                            day: this.asText(row.day || row.dia),
+                            name: this.asText(row.name || row.sandwich),
+                            badge: this.asText(row.badge || row.tag)
+                        }))
+                        .filter((row) => row.day || row.name || row.badge);
                 },
 
                 createCurrentState(menu) {
