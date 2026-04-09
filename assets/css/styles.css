@@ -35,9 +35,9 @@ body {
     color: var(--ink);
     font-family: var(--font-body);
     background:
-        radial-gradient(circle at top left, rgba(241, 199, 106, 0.45), transparent 28%),
-        radial-gradient(circle at 100% 20%, rgba(13, 138, 116, 0.12), transparent 24%),
-        linear-gradient(180deg, #f6efe4 0%, #fbf8f2 38%, #f6efe5 100%);
+    radial-gradient(circle at 20% 5%, rgba(241, 199, 106, 0.32), transparent 30%),
+    radial-gradient(circle at 95% 0%, rgba(13, 138, 116, 0.1), transparent 30%),
+    #efe7db;
 }
 
 img {
@@ -58,6 +58,11 @@ button {
     display: none !important;
 }
 
+.app-frame {
+    min-height: 100dvh;
+    background: linear-gradient(180deg, rgba(251, 248, 242, 0.95), rgba(246, 239, 229, 0.96));
+}
+
 .site-shell {
     width: min(1200px, calc(100% - 28px));
     margin: 0 auto;
@@ -68,8 +73,9 @@ button {
     top: 0;
     z-index: 50;
     backdrop-filter: blur(14px);
-    background: rgba(248, 244, 237, 0.72);
-    border-bottom: 1px solid rgba(77, 50, 34, 0.08);
+    background: rgba(255, 252, 247, 0.84);
+    border-bottom: 1px solid rgba(77, 50, 34, 0.14);
+    box-shadow: 0 6px 18px rgba(35, 22, 14, 0.06);
 }
 
 .topbar-inner {
@@ -897,7 +903,6 @@ button {
     box-shadow: none;
 }
 
-.contact-grid,
 .footer-grid {
     display: grid;
     gap: 14px;
@@ -909,78 +914,74 @@ button {
     padding: 20px;
 }
 
-.contact-list {
-    display: grid;
-    gap: 12px;
-    margin: 16px 0 0;
-}
-
-.contact-item {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    color: var(--muted);
-}
-
-.contact-item strong {
-    color: var(--ink);
-    display: block;
-    margin-bottom: 2px;
-}
-
-.contact-button {
-    min-height: 48px;
-    border-radius: 999px;
-    padding: 0 16px;
-    margin-top: 18px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.contact-note {
-    margin-top: 16px;
-    padding: 14px 16px;
-    border-radius: 18px;
-    background: rgba(13, 138, 116, 0.08);
-    color: var(--ink);
-    line-height: 1.45;
-}
-
 .news-list {
     margin-top: 12px;
     display: grid;
-    gap: 8px;
+    gap: 12px;
 }
 
-.news-item {
+.news-group {
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(255, 253, 249, 0.78);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+
+.news-group-head {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: baseline;
     gap: 10px;
-    padding: 9px 0;
-    border-bottom: 1px dashed var(--line);
+    padding: 14px 16px 12px;
+    background: linear-gradient(180deg, rgba(241, 199, 106, 0.14), rgba(255, 255, 255, 0));
+    border-bottom: 1px solid var(--line);
 }
 
-.news-day {
+.news-date {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--accent);
+}
+
+.news-date-meta {
     font-size: 0.74rem;
     font-weight: 800;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    min-width: 64px;
+}
+
+.news-group-items {
+    display: grid;
+    padding: 0 16px;
+}
+
+.news-item {
+    display: block;
+    padding: 11px 0;
+    border-bottom: 1px dashed var(--line);
+}
+
+.news-group-items .news-item:last-child {
+    border-bottom: none;
+}
+
+.news-copy {
+    min-width: 0;
+    display: grid;
+    gap: 4px;
 }
 
 .news-name {
-    flex: 1;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 700;
 }
 
-.news-badge {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: var(--accent-2);
+.news-description {
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.45;
 }
 
 .footer-card {
@@ -1010,37 +1011,59 @@ button {
     margin: 0 auto;
 }
 
-.footer-socials {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 4px;
+.footer-brand + .footer-line {
+    margin-top: -4px;
 }
 
-.footer-social-link {
+.footer-contact-list {
+    margin-top: 14px;
+    display: grid;
+    gap: 10px;
+    width: min(820px, 100%);
+    margin-inline: auto;
+    text-align: left;
+}
+
+.footer-contact-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--muted);
+}
+
+.footer-contact-item + .footer-contact-item {
+    border-top: 1px dashed rgba(77, 50, 34, 0.18);
+    padding-top: 10px;
+}
+
+.footer-contact-item > .ui-icon {
     width: 46px;
     height: 46px;
+    padding: 12px;
     border-radius: 999px;
     border: 1px solid rgba(77, 50, 34, 0.2);
     background: rgba(241, 199, 106, 0.22);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     color: var(--ink);
     box-shadow: 0 6px 14px rgba(35, 22, 14, 0.08);
-    transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    flex-shrink: 0;
 }
 
-.footer-social-link:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(77, 50, 34, 0.32);
+.footer-contact-item > div {
+    min-width: 0;
 }
 
-.footer-social-link .ui-icon {
-    width: 21px;
-    height: 21px;
+.footer-contact-item strong {
+    display: block;
+    color: var(--ink);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+}
+
+.footer-contact-item span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.35;
 }
 
 .button-press:active,
@@ -1059,7 +1082,8 @@ button {
     }
 
     #destacados .section-text,
-    #builder .section-text {
+    #builder .section-text,
+    #especiales .section-text {
         white-space: nowrap;
         max-width: none;
         font-size: 0.95rem;
@@ -1082,10 +1106,6 @@ button {
     .builder-stage {
         position: sticky;
         top: 92px;
-    }
-
-    .contact-grid {
-        grid-template-columns: 1.1fr 0.9fr;
     }
 
     .footer-grid {
@@ -1111,6 +1131,19 @@ button {
         max-width: none;
         font-size: 0.86rem;
     }
+
+    .footer-contact-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .footer-contact-item + .footer-contact-item {
+        border-top: none;
+        border-left: 1px dashed rgba(77, 50, 34, 0.18);
+        padding-top: 0;
+        padding-left: 12px;
+    }
+
 }
 
 @media (max-width: 759px) {
@@ -1122,8 +1155,6 @@ button {
     }
 
     .app-frame {
-        min-height: 100dvh;
-        background: linear-gradient(180deg, rgba(251, 248, 242, 0.95), rgba(246, 239, 229, 0.96));
         box-shadow: 0 0 0 1px rgba(77, 50, 34, 0.05), 0 18px 36px rgba(35, 22, 14, 0.12);
     }
 
@@ -1132,7 +1163,7 @@ button {
     }
 
     main {
-        padding-bottom: calc(92px + env(safe-area-inset-bottom));
+        padding-bottom: 0;
     }
 
     footer.section {
@@ -1215,9 +1246,50 @@ button {
         font-weight: 800;
         border: 1px solid rgba(255, 255, 255, 0.9);
     }
+
+    .footer-contact-list {
+        width: min(560px, 100%);
+        gap: 12px;
+        text-align: center;
+        justify-items: center;
+    }
+
+    .footer-contact-item {
+        width: min(360px, 100%);
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr);
+        column-gap: 9px;
+        align-items: flex-start;
+        justify-content: start;
+    }
+
+    .footer-contact-item > .ui-icon {
+        width: 38px;
+        height: 38px;
+        padding: 10px;
+    }
+
+    .footer-contact-item strong {
+        font-size: 0.8rem;
+    }
+
+    .footer-contact-item span {
+        font-size: 0.84rem;
+        line-height: 1.4;
+    }
+
+    .footer-contact-item > div {
+        text-align: left;
+    }
+
 }
 
 @media (max-width: 540px) {
+
+    .news-group-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 
     .upsell-grid,
     .upsell-actions {

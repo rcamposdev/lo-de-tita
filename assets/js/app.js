@@ -200,6 +200,7 @@ function landingApp() {
                     vegetales: [],
                     aderezos: []
                 };
+                let computedPrice = 0;
 
                 links.forEach((linkRow) => {
                     const itemId = this.asText(linkRow.item_id);
@@ -209,6 +210,8 @@ function landingApp() {
                     if (!itemId || !categoryId) {
                         return;
                     }
+
+                    computedPrice += this.asNumber(linkedIngredient?.price, 0) * qty;
 
                     if (categoryId === 'pan') {
                         ingredients.pan = itemId;
@@ -226,7 +229,7 @@ function landingApp() {
                     id: sandwichId,
                     name: this.asText(sandwichRow.name),
                     description: this.asText(sandwichRow.description),
-                    price: this.asNumber(sandwichRow.price, 0),
+                    price: computedPrice,
                     image: this.asText(sandwichRow.image),
                     ingredients
                 };
@@ -237,12 +240,91 @@ function landingApp() {
             return [...calendarRows]
                 .filter((row) => this.rowIsActive(row))
                 .sort((a, b) => this.asNumber(a.sort_order, 999) - this.asNumber(b.sort_order, 999))
-                .map((row) => ({
-                    day: this.asText(row.day || row.dia),
-                    name: this.asText(row.name || row.sandwich),
-                    badge: this.asText(row.badge || row.tag)
-                }))
-                .filter((row) => row.day || row.name || row.badge);
+                .map((row) => {
+                    const rawDay = this.asText(row.day || row.dia || row.date || row.fecha);
+                    const parsedDate = this.parseCalendarDate(rawDay);
+
+                    return {
+                        day: rawDay,
+                        dateLabel: parsedDate ? this.formatCalendarDateLabel(parsedDate) : rawDay,
+                        dayLabel: parsedDate ? this.formatCalendarWeekdayLabel(parsedDate) : '',
+                        name: this.asText(row.name || row.sandwich),
+                        description: this.asText(row.description || row.descripcion || row.detail || row.detalle || row.badge || row.tag)
+                    };
+                })
+                .filter((row) => row.day || row.name || row.description);
+        },
+
+        parseCalendarDate(value) {
+            if (value instanceof Date && !Number.isNaN(value.getTime())) {
+                return value;
+            }
+
+            const text = this.asText(value);
+            if (!text) {
+                return null;
+            }
+
+            const gvizMatch = text.match(/^Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})/);
+            if (gvizMatch) {
+                return new Date(Number(gvizMatch[1]), Number(gvizMatch[2]), Number(gvizMatch[3]));
+            }
+
+            const isoMatch = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+            if (isoMatch) {
+                return new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
+            }
+
+            const localMatch = text.match(/^(\d{1,2})[\/-](\d{1,2})(?:[\/-](\d{2,4}))?$/);
+            if (localMatch) {
+                const currentYear = new Date().getFullYear();
+                const year = localMatch[3]
+                    ? (localMatch[3].length === 2 ? 2000 + Number(localMatch[3]) : Number(localMatch[3]))
+                    : currentYear;
+                return new Date(year, Number(localMatch[2]) - 1, Number(localMatch[1]));
+            }
+
+            return null;
+        },
+
+        formatCalendarDateLabel(date) {
+            const formatter = new Intl.DateTimeFormat('es-AR', {
+                day: '2-digit',
+                month: 'short'
+            });
+
+            return formatter.format(date).replace('.', '');
+        },
+
+        formatCalendarWeekdayLabel(date) {
+            const formatter = new Intl.DateTimeFormat('es-AR', {
+                weekday: 'long'
+            });
+            const text = formatter.format(date);
+            return text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
+        },
+
+        calendarGroups() {
+            return this.calendar.reduce((groups, item) => {
+                const key = `${item.day}-${item.dateLabel}`;
+                const lastGroup = groups[groups.length - 1];
+
+                if (!lastGroup || lastGroup.key !== key) {
+                    groups.push({
+                        key,
+                        dateLabel: item.dateLabel || item.day,
+                        dayLabel: item.dayLabel || '',
+                        items: []
+                    });
+                }
+
+                groups[groups.length - 1].items.push({
+                    name: item.name,
+                    description: item.description
+                });
+
+                return groups;
+            }, []);
         },
 
         createCurrentState(menu) {

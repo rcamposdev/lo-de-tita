@@ -24,7 +24,7 @@
                 <div class="nav-actions">
                     <a class="nav-link" href="#destacados">Destacados</a>
                     <a class="nav-link" href="#builder">Arma el tuyo</a>
-                    <a class="nav-link" href="#contacto">Contacto</a>
+                    <a class="nav-link" href="#especiales">Especiales</a>
                     <button class="cart-button button-press" @click="cartOpen = true; refreshIcons()">
                         <i data-lucide="shopping-bag" class="ui-icon"></i>
                         <span>Pedido</span>
@@ -223,57 +223,36 @@
                 </div>
             </section>
 
-            <section class="section" id="contacto">
-                <div class="site-shell contact-grid">
-                    <div class="contact-card">
-                        <div class="section-kicker">Contacto</div>
-                        <h2 class="section-title">Pasá, llamá o escribinos</h2>
-                        <p class="section-text">Dejé una sección lista para completar con tus datos reales del local sin tocar la estructura de la landing.</p>
-                        <div class="contact-list">
-                            <div class="contact-item">
-                                <i data-lucide="map-pinned" class="ui-icon"></i>
-                                <div>
-                                    <strong>Direccion</strong>
-                                    <span>Agregar direccion del local</span>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <i data-lucide="phone-call" class="ui-icon"></i>
-                                <div>
-                                    <strong>Telefono</strong>
-                                    <span>Agregar telefono o WhatsApp</span>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <i data-lucide="clock-3" class="ui-icon"></i>
-                                <div>
-                                    <strong>Horarios</strong>
-                                    <span>Agregar dias y horarios de atencion</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="contact-button">
-                            <i data-lucide="message-circle-more" class="ui-icon"></i>
-                            Contactar
-                        </button>
-                    </div>
-
+            <section class="section" id="especiales">
+                <div class="site-shell">
                     <div class="contact-card">
                         <div class="section-kicker">Novedades</div>
-                        <h2 class="section-title">Calendario de sánguches</h2>
-                        <p class="section-text">Especiales de la semana. Rotan según stock y temporada.</p>
+                        <h2 class="section-title">Especiales de la semana</h2>
+                        <p class="section-text">Platos y sánguches fuera de carta para generar antojo. Agrupados por fecha para que el calendario se lea más rápido.</p>
                         <div class="news-list">
-                            <template x-for="item in calendar" :key="`${item.day}-${item.name}`">
-                                <div class="news-item">
-                                    <span class="news-day" x-text="item.day"></span>
-                                    <span class="news-name" x-text="item.name"></span>
-                                    <span class="news-badge" x-text="item.badge"></span>
-                                </div>
+                            <template x-for="group in calendarGroups()" :key="group.key">
+                                <section class="news-group">
+                                    <div class="news-group-head">
+                                        <span class="news-date" x-text="group.dateLabel"></span>
+                                        <span class="news-date-meta" x-show="group.dayLabel" x-text="group.dayLabel"></span>
+                                    </div>
+                                    <div class="news-group-items">
+                                        <template x-for="item in group.items" :key="`${group.key}-${item.name}`">
+                                            <div class="news-item">
+                                                <div class="news-copy">
+                                                    <span class="news-name" x-text="item.name"></span>
+                                                    <span class="news-description" x-show="item.description" x-text="item.description"></span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </section>
                             </template>
                         </div>
                     </div>
                 </div>
             </section>
+
         </main>
 
         <nav class="mobile-bottom-nav" aria-label="Navegacion inferior" x-show="!cartOpen && !upsellOpen && !checkoutSweetOpen" x-cloak>
@@ -296,11 +275,11 @@
                 </span>
                 <span class="mobile-nav-label">Destacados</span>
             </a>
-            <a class="mobile-nav-item" href="#contacto" aria-label="Contacto">
+            <a class="mobile-nav-item" href="#especiales" aria-label="Especiales">
                 <span class="mobile-nav-icon-wrap">
-                    <i data-lucide="message-circle-more" class="ui-icon"></i>
+                    <i data-lucide="calendar-days" class="ui-icon"></i>
                 </span>
-                <span class="mobile-nav-label">Contacto</span>
+                <span class="mobile-nav-label">Especiales</span>
             </a>
         </nav>
 
@@ -309,19 +288,28 @@
                 <div class="footer-card">
                     <div class="footer-brand">LO DE TITA</div>
                     <div class="footer-line">Sanguches familiares hechos con amor, listos para compartir.</div>
-                    <div class="footer-socials" aria-label="Redes sociales">
-                        <a class="footer-social-link" href="#" aria-label="Instagram">
-                            <i data-lucide="instagram" class="ui-icon"></i>
-                        </a>
-                        <a class="footer-social-link" href="#" aria-label="Facebook">
-                            <i data-lucide="facebook" class="ui-icon"></i>
-                        </a>
-                        <a class="footer-social-link" href="#" aria-label="TikTok">
-                            <i data-lucide="music-2" class="ui-icon"></i>
-                        </a>
-                        <a class="footer-social-link" href="#" aria-label="WhatsApp">
-                            <i data-lucide="message-circle-more" class="ui-icon"></i>
-                        </a>
+                    <div class="footer-contact-list" aria-label="Detalle de contacto">
+                        <div class="footer-contact-item">
+                            <i data-lucide="map-pinned" class="ui-icon"></i>
+                            <div>
+                                <strong>Direccion</strong>
+                                <span>Agregar direccion del local</span>
+                            </div>
+                        </div>
+                        <div class="footer-contact-item">
+                            <i data-lucide="phone-call" class="ui-icon"></i>
+                            <div>
+                                <strong>Telefono</strong>
+                                <span>Agregar telefono o WhatsApp</span>
+                            </div>
+                        </div>
+                        <div class="footer-contact-item">
+                            <i data-lucide="clock-3" class="ui-icon"></i>
+                            <div>
+                                <strong>Horarios</strong>
+                                <span>Agregar dias y horarios de atencion</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
